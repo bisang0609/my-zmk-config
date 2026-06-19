@@ -4,14 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    name: Build Test Firmware
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # 올바른 ZMK 공식 빌드 액션 주소(zmk-build-action) 사용
-      - name: Build nice_nano_v2
-        uses: zmkfirmware/zmk-build-action@v2
-        with:
-          board: nice_nano_v2
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    with:
+      # 빌드 전략 매핑을 우회하고nice_nano_v2 보드를 직접 지정하여 빌드합니다.
+      board_list: '["nice_nano_v2"]'
