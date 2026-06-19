@@ -4,7 +4,21 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
-    with:
-      # 빌드 전략 매핑을 우회하고nice_nano_v2 보드를 직접 지정하여 빌드합니다.
-      board_list: '["nice_nano_v2"]'
+    runs-on: ubuntu-latest
+    name: Build ZMK with Docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ZMK 공식 도커 이미지를 실행하여 간섭 없이 독립 빌드 진행
+      - name: Build Firmware
+        uses: docker://zmkfirmware/zmk-build-arm:stable
+        with:
+          args: /bin/sh -c "west init -l config && west update && west zephyr-export && west build -s zmk/app -b nice_nano_v2 -- -DUSER_CONFIG_DIR=/github/workspace/config"
+
+      # 빌드가 완료된 uf2 파일을 다운로드 링크로 생성
+      - name: Archive firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: nice_nano_v2_ssd1306
+          path: build/zephyr/zmk.uf2
