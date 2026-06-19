@@ -10,27 +10,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache west modules
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-zephyr-modules
-        with:
-          path: |
-            modules
-            tools
-            zephyr
-            bootloader
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/west.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-
-      - name: West Init
-        uses: zmkfirmware/zmk-action-build@v3
-        with:
-          init_only: true
-
+      # 올바른 ZMK 공식 빌드 액션 주소(zmk-build-action) 사용
       - name: Build nice_nano_v2
-        uses: zmkfirmware/zmk-action-build@v3
+        uses: zmkfirmware/zmk-build-action@v2
         with:
           board: nice_nano_v2
