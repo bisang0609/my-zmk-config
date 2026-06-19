@@ -1,6 +1,25 @@
 / {
     chosen {
         zephyr,display = &oled;
+        /* ZMK의 필수 제약 조건을 충족하기 위해 가상 kscan을 매핑합니다 */
+        zmk,kscan = &kscan0;
+        zmk,matrix-transform = &default_transform;
+    };
+
+    /* 1행 1열짜리 가상 매트릭스 변환 정의 */
+    default_transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        columns = <1>;
+        rows = <1>;
+        map = <RC(0,0)>;
+    };
+
+    /* 에러를 뿜지 않게 만들어주는 더미(Dummy) 키스캔 정의 */
+    kscan0: kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <1>;
+        rows = <1>;
+        events = <>;
     };
 };
 
@@ -10,11 +29,11 @@
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
         width = <128>;
-        height = <64>;       /* 128x64 모델이면 64 */
+        height = <32>;       /* 128x64 모델이면 64 */
         segment-offset = <0>;
         page-offset = <0>;
         display-offset = <0>;
-        multiplex-ratio = <63>; /* 128x64 모델이면 63 */
+        multiplex-ratio = <31>; /* 128x64 모델이면 63 */
         segment-remap;
         com-invdir;
         com-sequential;
