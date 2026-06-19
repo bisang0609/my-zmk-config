@@ -1,0 +1,3 @@
+# 어떤 보드용으로 빌드할지 지정하는 파일입니다.
+include:
+  - board: nice_nano_v2
