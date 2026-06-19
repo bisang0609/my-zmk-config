@@ -8,15 +8,14 @@ jobs:
     name: Build ZMK with Docker
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
-      # ZMK 공식 도커 이미지를 실행하여 간섭 없이 독립 빌드 진행
+      # 도커 환경 진입 전에 Git 소유권 보안 경고를 원천 차단하는 인자 주입
       - name: Build Firmware
         uses: docker://zmkfirmware/zmk-build-arm:stable
         with:
-          args: /bin/sh -c "west init -l config && west update && west zephyr-export && west build -s zmk/app -b nice_nano_v2 -- -DUSER_CONFIG_DIR=/github/workspace/config"
+          args: /bin/sh -c "git config --global --add safe.directory /github/workspace && git config --global --add safe.directory /github/workspace/zephyr && west init -l config && west update && west zephyr-export && west build -s zmk/app -b nice_nano_v2 -- -DUSER_CONFIG_DIR=/github/workspace/config"
 
-      # 빌드가 완료된 uf2 파일을 다운로드 링크로 생성
       - name: Archive firmware
         uses: actions/upload-artifact@v4
         with:
